@@ -1,66 +1,25 @@
-plot(Date, Happiness, frame=F, pch=20, type="l", ylim=c(1,10), xaxt='n', yaxt='n', bty='n', xlab="", ylab="")
-axis(side=1, xTicks, lwd="0", lwd.ticks="1", labels=xLabels)
-axis(side=2, c(1:10), lwd="0", lwd.ticks="1", labels=yLabels, las=1)
+# This function expects a data frame with a number of vectors. The first
+# of these vectors should be called "Date" and have a date in mm/dd/yyyy format.
 
-axis(side=2, c(1:10), lwd="0", lwd.ticks="1", las=1)
+smallMultiples <- function(df){
+	Dates <- as.Date(df$Date, format="%m/%d/%Y")
+	df$Date <- NULL
+	displayRows <- ncol(df) / 2 
+	# Show extra columns if odd number.
+	if ((ncol(df) %% 2) != 0){ displayRows <- displayRows + 1 }
+	par(mfrow=c(displayRows,2), mar=c(5,5,2,1))
+	x <- 1
+	for (i in df) {
+		plot(Dates, i, frame=F, font.main = 1, main=colnames(df)[x], type="l", ylim=c(1,10), yaxt='n',xlab="" , ylab="")
+		yAxisTicks <- c(1,round(mean(i), digits=2),10)
+		axis(side=2, yAxisTicks, lwd="0", lwd.ticks="0", las=1, labels=yAxisTicks)
+		rug(jitter(i), side=2, ticksize = -.07)
+		x <- x + 1
+	}
+}
 
+d <- read.csv("~/Desktop/lifedata.csv")
+df <- data.frame(d$Date, d$Create, d$Relax, d$Love, d$Befriend, d$Health, d$Happiness)
 
-axis(side=4, c(1,7.375,10), lwd="0", lwd.ticks="1", las=1, labels=c("1", "7.375", "10"))
-
-axis(side=1, Dates, lwd="0", lwd.ticks="1", las=1, labels=Dates)
-
-# Code to generate a 2 row by 3 column small-multiple of the six life goals.
-
-d = read.csv("~/Desktop/lifedata.csv")
-
-df = c(d$Date, d$Create, d$Relax, d$Love, d$
-
-Date <- as.Date(d$Date)
-Create <- d$Create
-Relax <- d$Relax
-Love <- d$Love
-Befriend <= d$Befriend
-Health <- d$Health
-Happiness <- d$Happiness
-
-png(height=1000, width=1500, pointsize=32, filename="~/Desktop/lifegoal_small_multiples.png")
-
-par(mfrow=c(2,3))
-
-dateTicks <- seq(as.Date("01/01/2014", format = "%d/%m/%Y"),
-             by = "15 days", length = 3)
-plot(Date, Create, frame=F, pch=20, type="l", ylim=c(1,10), xaxt='n', yaxt='n', bty='n', xlab="", font.main = 1, main="Create", ylab="")
-axis(side=2, c(1,3,7.312,10), lwd="0", lwd.ticks="1", las=1, labels=c("1","3","7.312","10"))
-axis.Date(side=1, at=dateTicks, Date, lwd="0", lwd.ticks="1")
-yAxisTicks <- jitter(Create)
-axis(side=2, Create, lwd="0", lwd.ticks="1", las=1, labels=F)
-
-plot(Date, Relax, frame=F, pch=20, type="l", ylim=c(1,10), xaxt='n', yaxt='n', bty='n', xlab="", font.main = 1, main="Relax", ylab="")
-axis(side=2, c(1,2,7.031,10), lwd="0", lwd.ticks="1", las=1, labels=c("1","2","7.031","10"))
-axis.Date(side=1, at=dateTicks, Date, lwd="0", lwd.ticks="1")
-yAxisTicks <- jitter(Relax)
-axis(side=2, yAxisTicks, lwd="0", lwd.ticks="1", las=1, labels=F)
-
-plot(Date, Love, frame=F, pch=20, type="l", ylim=c(1,10), xaxt='n', yaxt='n', bty='n', xlab="", font.main = 1, main="Love", ylab="")
-axis(side=2, c(1,4,8.344,10), lwd="0", lwd.ticks="1", las=1, labels=c("1","4","8.344","10"))
-axis.Date(side=1, at=dateTicks, Date, lwd="0", lwd.ticks="1")
-yAxisTicks <- jitter(Love)
-axis(side=2, yAxisTicks, lwd="0", lwd.ticks="1", las=1, labels=F)
-
-plot(Date, Befriend, frame=F, pch=20, type="l", ylim=c(1,10), xaxt='n', yaxt='n', bty='n', xlab="", font.main = 1, main="Befriend", ylab="")
-axis(side=2, c(1,6.812,10), lwd="0", lwd.ticks="1", las=1, labels=c("1","6.812","10"))
-axis.Date(side=1, at=dateTicks, Date, lwd="0", lwd.ticks="1")
-yAxisTicks <- jitter(Befriend)
-axis(side=2, yAxisTicks, lwd="0", lwd.ticks="1", las=1, labels=F)
-
-plot(Date, Health, frame=F, pch=20, type="l", ylim=c(1,10), xaxt='n', yaxt='n', bty='n', xlab="", font.main = 1, main="Health", ylab="")
-axis(side=2, c(1,2,6.938,9,10), lwd="0", lwd.ticks="1", las=1, labels=c("1","2","6.938","9","10"))
-axis.Date(side=1, at=dateTicks, Date, lwd="0", lwd.ticks="1")
-yAxisTicks <- jitter(Health)
-axis(side=2, yAxisTicks, lwd="0", lwd.ticks="1", las=1, labels=F)
-
-plot(Date, Happiness, frame=F, pch=20, type="l", ylim=c(1,10), xaxt='n', yaxt='n', bty='n', xlab="", font.main = 1, main="Happiness", ylab="")
-axis(side=2, c(1,4,7.812,9,10), lwd="0", lwd.ticks="1", las=1, labels=c("1","4","7.812","9","10"))
-axis.Date(side=1, at=dateTicks, Date, lwd="0", lwd.ticks="1")
-yAxisTicks <- jitter(Happiness)
-axis(side=2, yAxisTicks, lwd="0", lwd.ticks="1", las=1, labels=F)
+colnames(df) <- c("Date", "Create", "Relax", "Love", "Befriend", "Health", "Happiness")
+smallMultiples(df)
