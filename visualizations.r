@@ -92,6 +92,54 @@ multipleBoxplot <- function(d) {
 	axis(side=2, c(quantile(total, names=FALSE, type=1)), lwd="0", lwd.ticks="1", las=1)
 }
 
+# This function takes in a dataframe containing dates and times. Dates should be
+# in YYYY-MM-DD format and times should be in HH:MM:SS format. Each column
+# should be labeled with "Dates" and "Times".
+
+generateDateTimeScatterplot <- function(df) {
+	par(mar=c(3,4,1,3))
+	Dates <- df$Dates
+	Times <- df$Times
+	xTicks <-quantile(Dates, names=FALSE)
+	yTicks <- quantile(Times, names=FALSE)
+	xLabels <- format(as.Date(xTicks), "%d %b %Y")
+	yLabels <- format(as.POSIXct(yTicks, origin="1960-01-01 00:00:00"), "%H:%M")
+	plot(Dates,Times,pch=".",frame=F, xaxt='n', yaxt='n', bty='n', xlab="", ylab="")
+	axis(side=1, xTicks, lwd="0", lwd.ticks="1", labels=xLabels)
+	axis(side=2, yTicks, lwd="0", lwd.ticks="1", labels=yLabels, las=1)
+}
+
+# This function is required to generate random dates between 1999 and 2013
+# It is used by generateRandomDates to build out a large date stream.
+randomDateGenerator <- function(N, st="1999/01/01", et="2013/12/31") {
+	st <- as.POSIXct(as.Date(st))
+	et <- as.POSIXct(as.Date(et))
+	dt <- as.numeric(difftime(et,st,unit="sec"))
+	ev <- sort(runif(N, 0, dt))
+	rt <- st + ev
+}
+
+# This fuction builds a dataframe containing 50,000 random Dates and Times.
+generateRandomDates <- function() {
+	d <- randomDateGenerator(50000) # build 50,000 random datetimes
+	Dates <- as.POSIXct(d)
+	Times <- c()
+
+	for (a in 1:length(d)) {
+		hour <- round(runif(1,00,23), digits=0)
+		minutes <- round(runif(1,00,59), digits=0)
+		seconds <- round(runif(1,00,59), digits=0)
+		time <- c(paste(hour,":",minutes,":",seconds))
+		newTime <- as.POSIXct(strptime(time, "%H : %M : %S"))
+		Times <- c(Times, newTime)
+	}
+	return(data.frame(Dates, Times))
+}
+
+# Replicate the date / time scatterplot
+dateTimeData <- generateRandomDates()
+generateDateTimeScatterplot(dateTimeData)
+
 # Replicate the Boxplot Data
 md <- data.frame(replicate(6,sample(1:10,365,rep=TRUE)))
 multipleBoxplot(md)
