@@ -60,7 +60,7 @@ binarySparkline(binaryData)
 # default Y scale.
 
 smallMultiples <- function(df, dates){
-	par(mfrow=c(ncol(df),1), mar=c(3,5,2,1), lwd=2)
+	par(mfrow=c(ncol(df),1), mar=c(3,5,2,1), lwd=4)
 	x <- 1
 	for (i in df) {
 		plot(dates, i, frame=F, font.main = 1, main=colnames(df)[x], type="l", ylim=c(1,10), yaxt='n',xlab="" , ylab="")
@@ -115,9 +115,8 @@ md <- data.frame(replicate(6,sample(1:10,365,rep=TRUE)))
 multipleBoxplot(md)
 
 # Output for smallMultiples & multipleBoxplot:
-d <- read.csv("~/Desktop/lifedata.csv")
+d <- read.csv("http://mikeshea.net/lifetracker/lifedata.csv")
 dates <- c(as.Date(d$Date, format="%m/%d/%Y"))
-colnames(dates) <- "Date"
 df <- data.frame(d$Create, d$Relax, d$Love, d$Befriend, d$Health, d$Happiness)
 colnames(df) <- c("Create", "Relax", "Love", "Befriend", "Health", "Happiness")
 smallMultiples(df, dates)
