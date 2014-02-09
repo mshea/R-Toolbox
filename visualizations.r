@@ -97,53 +97,22 @@ multipleBoxplot <- function(d) {
 # should be labeled with "Dates" and "Times".
 
 generateDateTimeScatterplot <- function(df) {
-	par(mar=c(3,4,1,3))
-	Dates <- df$Dates
-	Times <- df$Times
+	#png(filename="~/Desktop/scatterplot.png", height=600, width=1200, pointsize=9)
+	par(mar=c(3,4,1,1), cex=2)
+	Dates <- as.POSIXlt(df$Dates)
 	xTicks <-quantile(Dates, names=FALSE)
+	Times <- as.POSIXct(df$Times, format="%H:%M:%S")
 	yTicks <- quantile(Times, names=FALSE)
 	xLabels <- format(as.Date(xTicks), "%d %b %Y")
 	yLabels <- format(as.POSIXct(yTicks, origin="1960-01-01 00:00:00"), "%H:%M")
-	plot(Dates,Times,pch=".",frame=F, xaxt='n', yaxt='n', bty='n', xlab="", ylab="")
+	plot(Dates,Times,pch='.',frame=F, xaxt='n', yaxt='n', bty='n', xlab="", ylab="")
 	axis(side=1, xTicks, lwd="0", lwd.ticks="1", labels=xLabels)
 	axis(side=2, yTicks, lwd="0", lwd.ticks="1", labels=yLabels, las=1)
 }
 
-# This function is required to generate random dates between 1999 and 2013
-# It is used by generateRandomDates to build out a large date stream.
-randomDateGenerator <- function(N, st="1999/01/01", et="2013/12/31") {
-	st <- as.POSIXct(as.Date(st))
-	et <- as.POSIXct(as.Date(et))
-	dt <- as.numeric(difftime(et,st,unit="sec"))
-	ev <- sort(runif(N, 0, dt))
-	rt <- st + ev
-}
-
-# This fuction builds a dataframe containing 50,000 random Dates and Times.
-generateRandomDates <- function() {
-	d <- randomDateGenerator(50000) # build 50,000 random datetimes
-	Dates <- as.POSIXct(d)
-	Times <- c()
-
-	for (a in 1:length(d)) {
-		hour <- round(runif(1,00,23), digits=0)
-		minutes <- round(runif(1,00,59), digits=0)
-		seconds <- round(runif(1,00,59), digits=0)
-		time <- c(paste(hour,":",minutes,":",seconds))
-		newTime <- as.POSIXct(strptime(time, "%H : %M : %S"))
-		Times <- c(Times, newTime)
-	}
-	return(data.frame(Dates, Times))
-}
-
-# Replicate the date / time scatterplot
-dateTimeData <- generateRandomDates()
-generateDateTimeScatterplot(dateTimeData)
-
 # Replicate the Boxplot Data
 md <- data.frame(replicate(6,sample(1:10,365,rep=TRUE)))
 multipleBoxplot(md)
-
 
 # Output for smallMultiples & multipleBoxplot:
 d <- read.csv("~/Desktop/lifedata.csv")
@@ -154,3 +123,6 @@ colnames(df) <- c("Create", "Relax", "Love", "Befriend", "Health", "Happiness")
 smallMultiples(df, dates)
 
 multipleBoxplot(df)
+
+# Output for Scatterplot
+generateDateTimeScatterplot(read.csv("~/Desktop/sample_date_time_data.csv"))
