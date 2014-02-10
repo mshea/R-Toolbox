@@ -115,7 +115,7 @@ md <- data.frame(replicate(6,sample(1:10,365,rep=TRUE)))
 multipleBoxplot(md)
 
 # Output for smallMultiples & multipleBoxplot:
-d <- read.csv("http://mikeshea.net/lifetracker/lifedata.csv")
+d <- read.csv("~/Desktop/lifedata.csv")
 dates <- c(as.Date(d$Date, format="%m/%d/%Y"))
 df <- data.frame(d$Create, d$Relax, d$Love, d$Befriend, d$Health, d$Happiness)
 colnames(df) <- c("Create", "Relax", "Love", "Befriend", "Health", "Happiness")
