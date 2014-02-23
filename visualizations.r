@@ -60,15 +60,20 @@ binarySparkline(binaryData)
 # default Y scale.
 
 smallMultiples <- function(df, dates){
-	par(mfrow=c(ncol(df),1), mar=c(3,5,2,1), lwd=4)
+	par(mfrow=c(ncol(df),1), mar=c(1,5,1,.1), lwd=1, oma=c(3,.2,.2,.2))
 	x <- 1
+	dateTicks <- seq(from = dates[1], to = tail(dates, n=1), length.out=5)
 	for (i in df) {
-		plot(dates, i, frame=F, font.main = 1, main=colnames(df)[x], type="l", ylim=c(1,10), yaxt='n',xlab="" , ylab="")
-		yAxisTicks <- c(1,round(mean(i), digits=2),10)
-		axis(side=2, yAxisTicks, lwd="0", lwd.ticks="0", las=1, labels=yAxisTicks)
-		rug(jitter(i), side=2, ticksize = -.07)
+		plot(dates, i, frame=F, font.main = 1, main="", type="n", ylim=c(1,10), yaxt='n', xaxt="n", xlab="" , ylab=colnames(df)[x], col='#333333')
+		quans <- quantile(i, names=FALSE)
+		axis(side=2, at=quans[3], lwd="0", lwd.ticks="0", las=1, labels=quans[3])
+		rug(jitter(i, amount=.5), side=2, ticksize = -.1, col='#aaaaaa')
+		rect(dates[1], quans[2], dates[-1], quans[4], border="#eeeeee", col="#eeeeee")
+		lines(dates, rep(quans[3], times=length(dates)), col="#aaaaaa")
+		lines(dates, i, col="#333333")
 		x <- x + 1
 	}
+	axis.Date(side=1, pos=c(-1), at=dateTicks, lwd="0", lwd.ticks="1", format="%d %b", col="#cccccc")
 }
 
 # Replicate dates for small multiples, should be the same number of rows
@@ -115,7 +120,7 @@ md <- data.frame(replicate(6,sample(1:10,365,rep=TRUE)))
 multipleBoxplot(md)
 
 # Output for smallMultiples & multipleBoxplot:
-d <- read.csv("~/Desktop/lifedata.csv")
+d <- read.csv("~Desktop/lifedata.csv")
 dates <- c(as.Date(d$Date, format="%m/%d/%Y"))
 df <- data.frame(d$Create, d$Relax, d$Love, d$Befriend, d$Health, d$Happiness)
 colnames(df) <- c("Create", "Relax", "Love", "Befriend", "Health", "Happiness")
