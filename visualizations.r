@@ -30,29 +30,47 @@
 # 0,1,0,1
 # 1,1,0,1
 # 1,1,1,0
+#
+# Use the sortTagsIntoTable function to convert a set of dates, tags, and values
+# into a table of 0s and 1s by tag and date for use in the binarySparkline
+# function
 
 binarySparkline <- function(d) {
-	par(mfrow=c(ncol(d),1), mar=c(.1,10,.1,.1), lwd=1)
 	v <- 0
+	par(mfrow=c(ncol(d),1), mar=c(.1,10,.1,.1), lwd=1)
 	for (y in d) {
 		v <- v + 1
-		x <- seq_along(y)
-		y2 <- rep(y, each=2)
-		y2 <- y2[-length(y2)]
-		x2 <- rep(x, each=2)[-1]
-		x3 <- c(min(x2), x2, max(x2))
-		y3 <- c(0, y2, 0)
-		colName <- paste(colnames(d)[v], " ", sum(y))
 		par(las=1)
-		plot(x, y, space=NULL, ylim=c(0, max(y)), type="n", pch=20, frame=F, xaxt='n',  yaxt="n", ann=FALSE)
-		axis(side=2, at=.5, pos=1, labels=colName, lwd=F)
-		polygon(x3, y3, border="#999999", col="#999999")
+		colName <- paste(colnames(d)[v], " ", sum(y))
+		plot(y, space=NULL, ylim=c(1, 1), type="p", pch=124, frame=F, xaxt='n',  yaxt="n", ann=FALSE, cex=1, col='#aaaaaa')
+		axis(side=2, at=1, pos=1, labels=colName, lwd=F)
 	}
 }
 
-# Replicate the binarySparkline data frame and run the function
-binaryData <- data.frame(replicate(25,sample(0:1,365,rep=TRUE)))
-binarySparkline(binaryData)
+# Function for converting a set of date, key, values
+# into a table of 0s and 1s sorted most to least. Used for binary Sparklines.
+sortTagsIntoTable <- function(df) {
+	tags <- as.data.frame(table(df[2]))
+	attach(tags)
+	sortedTags <- tags[order(-Freq),]
+	topTags <- as.vector(sortedTags[[1]])
+	dateTags <- data.frame(df[1], df[2])
+	d <- as.data.frame.matrix(table(dateTags))[topTags]
+}
+
+# Sample data for sparkline output
+d <- data.frame(replicate(50,sample(0:1,365,rep=TRUE)))
+png(filename="~/Desktop/tags.png", height=3000, width=1600, pointsize=40)
+binarySparkline(d)
+dev.off()
+
+# Output for binarySparklines with csv input
+df <- read.csv("~/Desktop/tags.csv")
+d <- sortTagsIntoTable(df)
+png(filename="~/Desktop/tags.png", height=3000, width=800, pointsize=40)
+binarySparkline(d)
+dev.off()
+
 
 # This function takes in a dataframe of roughly six columns
 # and displays them on a series of stacked line charts.
@@ -81,13 +99,20 @@ md <- data.frame(replicate(6,sample(1:10,365,rep=TRUE)))
 dates <- seq(as.Date("2014/1/1"), as.Date("2014/12/31"), "days")
 smallMultiples(md, dates)
 
+# Output for smallMultiples using csv data.
+d <- read.csv("~/Desktop/lifedata.csv")
+dates <- c(as.Date(d$Date, format="%m/%d/%Y"))
+df <- data.frame(d$Create, d$Relax, d$Love, d$Befriend, d$Health, d$Happiness)
+colnames(df) <- c("Create", "Relax", "Love", "Befriend", "Health", "Happiness")
+smallMultiples(df, dates)
+
 
 # This function takes in a dataframe containing a number of columns with 
 # an equal number of numeric rows of data between 1 and 10 and generates 
 # a boxplot to compare them together.
 
 multipleBoxplot <- function(d) {
-	par(mfrow=c(1,1), lwd=3)
+	par(mfrow=c(1,1), lwd=1)
 	boxplot(d,frame=F,yaxt='n', bty='n', xlab="", ylab="",xaxt='n')
 	axis(side=1, c(1:6), lwd="0", lwd.ticks="0", las=1, labels=colnames(d))
 	total <- c()
@@ -96,6 +121,10 @@ multipleBoxplot <- function(d) {
 	}
 	axis(side=2, c(quantile(total, names=FALSE, type=1)), lwd="0", lwd.ticks="1", las=1)
 }
+
+# Sample boxplot output
+md <- data.frame(replicate(6,sample(1:10,365,rep=TRUE)))
+multipleBoxplot(md)
 
 # This function takes in a dataframe containing dates and times. Dates should be
 # in YYYY-MM-DD format and times should be in HH:MM:SS format. Each column
@@ -115,18 +144,6 @@ generateDateTimeScatterplot <- function(df) {
 	axis(side=2, yTicks, lwd="0", lwd.ticks="1", labels=yLabels, las=1)
 }
 
-# Replicate the Boxplot Data
-md <- data.frame(replicate(6,sample(1:10,365,rep=TRUE)))
-multipleBoxplot(md)
-
-# Output for smallMultiples & multipleBoxplot:
-d <- read.csv("~Desktop/lifedata.csv")
-dates <- c(as.Date(d$Date, format="%m/%d/%Y"))
-df <- data.frame(d$Create, d$Relax, d$Love, d$Befriend, d$Health, d$Happiness)
-colnames(df) <- c("Create", "Relax", "Love", "Befriend", "Health", "Happiness")
-smallMultiples(df, dates)
-
-multipleBoxplot(df)
-
 # Output for Scatterplot
 generateDateTimeScatterplot(read.csv("~/Desktop/sample_date_time_data.csv"))
+
