@@ -97,7 +97,9 @@ smallMultiples <- function(df, dates){
 # Replicate dates for small multiples, should be the same number of rows
 md <- data.frame(replicate(6,sample(1:10,365,rep=TRUE)))
 dates <- seq(as.Date("2014/1/1"), as.Date("2014/12/31"), "days")
+png(filename="~/Desktop/smallMultiples.png", height=1200, width=1200, pointsize=40)
 smallMultiples(md, dates)
+dev.off()
 
 # Output for smallMultiples using csv data.
 d <- read.csv("~/Desktop/lifedata.csv")
