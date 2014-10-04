@@ -12,6 +12,7 @@ dt <- dt[complete.cases(dt),]
 dates <- c(as.Date(dt$datetime, format="%m/%d/%Y %I:%M:%S %p"))
 dt$datetime <- NULL
 
+
 binarySparkline <- function(d) {
   v <- 0
   par(mfrow=c(ncol(d),1), mar=c(.1,6,.1,0), lwd=1)
@@ -28,7 +29,7 @@ binarySparkline <- function(d) {
     x2 <- rep(x, each=2)[-1]
     x3 <- c(min(x2), x2, max(x2))
     y3 <- c(0, y2, 0)
-    polygon(x3, y3, border=NA, col="grey")
+    polygon(x3, y3, border=NA, col="#666666")
     axis(side=2, at=.5, pos=1, labels=colName, lwd=F)
   }
 }
@@ -57,6 +58,6 @@ dtags <- sortTagsIntoTable(dtags)
 dtags <- dtags[rowSums(dtags) > 1, , drop=FALSE] 
 dtags <- dtags[c("atewell", "atepoorly")]
 
-svg(filename=paste(outputdir, "tags.svg", sep=""), height=1, width=20, pointsize=30)
+svg(filename=paste(outputdir, "tags.svg", sep=""), height=1.5, width=20, pointsize=35)
 binarySparkline(dtags)
 dev.off()
