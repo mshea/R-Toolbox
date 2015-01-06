@@ -69,18 +69,67 @@ stopwords <- c("Friend_Contact", "Sleep", "Relax", "Love", "Thinking About", "Be
 newd <- newd[order(as.Date(newd$datetime, format="%m/%d/%Y %I:%M:%S %p")),]
 dates <- unique(c(as.Date(newd$datetime, format="%m/%d/%Y %I:%M:%S %p")))
 
-## Build a chart for movies
 view_values_as_keys <- 0
-#tagnames <- c("Read", "Audiobook")
 tagnames <- c()
 tagsize <- 13 # How much space do you need on the left side of the graph?
 filtereddata <- filterData(newd, tagnames, stopwords, view_values_as_keys)
-numrows <- 24
+ddd <- as.data.frame(table(filtereddata[2]))
+numrows <- nrow(ddd)
 newtable <- sortTagsIntoTable(filtereddata, numrows)
-newtable <- newtable[rowSums(newtable) > 0, , drop=FALSE]
+newtable <- newtable[rowSums(newtable) > 1, , drop=FALSE]
+newtable <- newtable[,colSums(newtable) > 0]
 newtable[1] <- NULL # this dumps the Create
 if (length(displaynames) > 1) {colnames(newtable) <- displaynames}
 svgheight <- (ncol(newtable)*.6)+1.2 # make the size of the svg based on number of columns of data
-svg(filename=paste(outputdir, "2014_books.svg", sep=""), height=svgheight, width=20, pointsize=40)
+svg(filename=paste(outputdir, "tags.svg", sep=""), height=svgheight, width=20, pointsize=40)
+binarySparkline(newtable, tagsize, dates)
+dev.off()
+
+view_values_as_keys <- 1
+tagnames <- c("Read", "Audiobook")
+#tagnames <- c()
+tagsize <- 13 # How much space do you need on the left side of the graph?
+filtereddata <- filterData(newd, tagnames, stopwords, view_values_as_keys)
+ddd <- as.data.frame(table(filtereddata[2]))
+numrows <- nrow(ddd)
+newtable <- sortTagsIntoTable(filtereddata, numrows)
+newtable <- newtable[rowSums(newtable) > 1, , drop=FALSE]
+newtable <- newtable[,colSums(newtable) > 0]
+newtable[1] <- NULL # this dumps the Create
+if (length(displaynames) > 1) {colnames(newtable) <- displaynames}
+svgheight <- (ncol(newtable)*.6)+1.2 # make the size of the svg based on number of columns of data
+svg(filename=paste(outputdir, "books.svg", sep=""), height=svgheight, width=20, pointsize=40)
+binarySparkline(newtable, tagsize, dates)
+dev.off()
+
+view_values_as_keys <- 1
+tagnames <- c("Videogame", "Game With Friends", "Game With Michelle")
+tagsize <- 13 # How much space do you need on the left side of the graph?
+filtereddata <- filterData(newd, tagnames, stopwords, view_values_as_keys)
+ddd <- as.data.frame(table(filtereddata[2]))
+numrows <- nrow(ddd)
+newtable <- sortTagsIntoTable(filtereddata, numrows)
+newtable <- newtable[rowSums(newtable) > 1, , drop=FALSE]
+newtable <- newtable[,colSums(newtable) > 0]
+newtable[1] <- NULL # this dumps the Create
+if (length(displaynames) > 1) {colnames(newtable) <- displaynames}
+svgheight <- (ncol(newtable)*.6)+1.2 # make the size of the svg based on number of columns of data
+svg(filename=paste(outputdir, "games.svg", sep=""), height=svgheight, width=20, pointsize=40)
+binarySparkline(newtable, tagsize, dates)
+dev.off()
+
+view_values_as_keys <- 1
+tagnames <- c("Movie", "TV", "Movie With Michelle", "TV With Michelle")
+tagsize <- 13 # How much space do you need on the left side of the graph?
+filtereddata <- filterData(newd, tagnames, stopwords, view_values_as_keys)
+ddd <- as.data.frame(table(filtereddata[2]))
+numrows <- nrow(ddd)
+newtable <- sortTagsIntoTable(filtereddata, numrows)
+newtable <- newtable[rowSums(newtable) > 1, , drop=FALSE]
+newtable <- newtable[,colSums(newtable) > 0]
+newtable[1] <- NULL # this dumps the Create
+if (length(displaynames) > 1) {colnames(newtable) <- displaynames}
+svgheight <- (ncol(newtable)*.6)+1.2 # make the size of the svg based on number of columns of data
+svg(filename=paste(outputdir, "movies.svg", sep=""), height=svgheight, width=20, pointsize=40)
 binarySparkline(newtable, tagsize, dates)
 dev.off()
