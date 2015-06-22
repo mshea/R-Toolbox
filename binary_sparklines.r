@@ -66,8 +66,9 @@ newd <- read.csv("~/Desktop/lifedata.csv")
 outputdir <- "~/Desktop/"
 displaynames <- c()
 stopwords <- c("Friend_Contact", "Sleep", "Relax", "Love", "Thinking About", "Befriend", "Health","Happiness", "Latitude", "Longitude", "Event")
-newd <- newd[order(as.Date(newd$datetime, format="%m/%d/%Y %I:%M:%S %p")),]
-dates <- unique(c(as.Date(newd$datetime, format="%m/%d/%Y %I:%M:%S %p")))
+newd$datetime <- format(strptime(newd$datetime, format="%m/%d/%Y %I:%M:%S %p"), "%m/%d/%Y")
+newd <- newd[order(as.Date(newd$datetime, format="%m/%d/%Y")),]
+dates <- unique(c(as.Date(newd$datetime, format="%m/%d/%Y")))
 
 view_values_as_keys <- 0
 tagnames <- c()
