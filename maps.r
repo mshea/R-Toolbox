@@ -9,5 +9,5 @@ svg(filename=paste("~/Desktop/map.svg", sep=""), height=12, width=20, pointsize=
 map("state")
 latitude <- as.numeric(levels(location$value.Latitude))[location$value.Latitude]
 longitude <- as.numeric(levels(location$value.Longitude))[location$value.Longitude]
-points(longitude, latitude, pch=19, col="blue", alpha=.2)
+points(longitude, latitude, pch=19, col="blue")
 dev.off()
