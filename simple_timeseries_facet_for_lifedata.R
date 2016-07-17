@@ -5,11 +5,13 @@ d <- subset(d, key %in% values)
 d$datetime <- as.Date(d$datetime, "%m/%d/%Y")
 d$value <- as.character(d$value)
 d$value <- as.numeric(d$value)
-d$key <- factor(d$key, levels = values)
-svg("~/Desktop/lifeplot.svg", height=4.5, width=6)
+d <- ddply(d, "key", transform, mean  = round(mean(value), 2))
+d$newtitle <- paste(d$key, d$mean, sep = " ")
+d$key <- factor(d$newtitle, levels = values)
+svg("~/Desktop/lifeplot.svg", height=5.7, width=6)
 ggplot(d, aes(x = datetime, y=value)) + geom_line(color="#555555", size=.2) + 
-  facet_grid(key ~ .) +
-  scale_y_continuous(breaks=c(3,8)) + 
+  facet_grid(newtitle ~ .) +
+  scale_y_continuous(breaks=c(10,7,3)) + 
   theme(axis.line=element_blank(),
             #axis.text.x=element_blank(),
             #axis.text.y=element_blank(),
