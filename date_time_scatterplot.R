@@ -1,6 +1,10 @@
+# This script generates a huge scatterplot based on the dates and times of events.
+# The test case is tweets plotted by date and time. It needs no other data other than
+# date and times in a long list, like emails or log entries or whatever.
+
 library(ggplot2)
 library(scales)
-d <- read.csv("~/Desktop/tweet_dates.csv")
+d <- read.csv("~/Documents/github/R Toolbox/tweet_dates.csv")
 #d <- d[1:5000,]
 d$date <- as.Date(d$Parsed.Date, "%Y-%m-%d")
 d$timestring <- strftime(as.POSIXct(d$Parsed.Date, format="%Y-%m-%d %H:%M:%S"), format="%H:%M:%S")

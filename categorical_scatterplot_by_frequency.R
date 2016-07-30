@@ -1,9 +1,17 @@
+# This plot generates a long categorical scatterplot sometimes referred to
+# as a binary sparkline. It shows events across time for a large number of 
+# categories.
+#
+# In this case, it is flipping values for keys so it can display the values
+# for particular keys (like when did I read which books).
+
 require(ggplot2)
 require(plyr)
-d <- read.csv("~Desktop/lifedatatotal.csv", 
+d <- read.csv("~/Documents/github/R Toolbox/lifedata.csv",
               stringsAsFactors = FALSE)
 d$datetime <- as.Date(d$datetime, "%m/%d/%Y")
 # d <- subset(d, datetime > as.Date("2015-07-16"))
+
 values <- c("Read", "Audiobook")
 d <- subset(d, key %in% values)
 d["key"] <- d["value"]
@@ -12,11 +20,12 @@ d<-d[!(d$key==1),]
 counts <- as.data.frame(table(d$key))
 colnames(counts)[1] <- "key"
 d = join(d,counts,by='key')
+
 d$key <- paste(d$key, " - ", d$Freq, " (", 
   round(d$Freq / nrow(table(d$datetime)) * 100), 
   "%)", sep = "")
 d <- transform(d, key = reorder(key, Freq))
-svg("~/Desktop/books_since_2014.svg", height=12, width=8)
+svg("~/Desktop/categorical_scatterplot_by_frequency.svg", height=12, width=8)
 ggplot(d, aes(x = datetime, y=key)) + 
   #geom_point(color="#555555") + # circles
   geom_point(shape=108, color="#555555", size=4) + # lines

@@ -1,5 +1,9 @@
+# This plot generates a categorical scatterplot but instead of using 
+# jitter to plot the dots, it puts a dot at the right x and y for the date
+# beginning at the upper left and going to the lower right.
+
 require(ggplot2)
-d <- read.csv("~/lifedatatotal.csv")
+d <- read.csv("~/Documents/github/R Toolbox/lifedata.csv")
 values <- c("Create", "Relax", "Love", "Befriend", "Health", "Happiness")
 d <- subset(d, key %in% values)
 d$datetime <- as.Date(d$datetime, "%m/%d/%Y")

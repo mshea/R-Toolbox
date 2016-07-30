@@ -2,4 +2,6 @@ This Github repository contains a set of R functions to build visualizations of 
 
 These functions are intended as a toolbox of various ways to model data and feed it to an output. You'll likely need to spend some time with R yourself before these will be of any use.
 
+This repo includes a couple of large sample datasets these scripts can run upon.
+
 Consider it a public junk drawer of useful R visualization ideas.
